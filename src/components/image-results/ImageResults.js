@@ -8,8 +8,26 @@ import FlatButton from "material-ui/FlatButton";
 import { Divider } from "material-ui";
 
 class ImageResults extends Component {
+  state = {
+    open: false,
+    currentImg: ""
+  };
+
   static propTypes = {
     images: PropTypes.array.isRequired
+  };
+
+  handleOpen = img => {
+    this.setState({
+      open: true,
+      currentImg: img
+    });
+  };
+
+  handleClose = () => {
+    this.setState({
+      open: false
+    });
   };
 
   render() {
@@ -29,7 +47,7 @@ class ImageResults extends Component {
                 </span>
               }
               actionIcon={
-                <IconButton>
+                <IconButton onClick={() => this.handleOpen(img.largeImageURL)}>
                   <ZoomIn color="white" />
                 </IconButton>
               }
@@ -43,7 +61,23 @@ class ImageResults extends Component {
       imageListContent = null;
     }
 
-    return <div>{imageListContent}</div>;
+    const actions = [
+      <FlatButton label="Close" primary={true} onClick={this.handleClose} />
+    ];
+
+    return (
+      <div>
+        {imageListContent}
+        <Dialog
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+          <img src={this.state.currentImg} alt="" style={{ width: "100%" }} />
+        </Dialog>
+      </div>
+    );
   }
 }
 
